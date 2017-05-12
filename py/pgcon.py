@@ -10,7 +10,6 @@ print sys.version
 
 
 
-
 conn = psycopg2.connect(host="10.2.121.101",user="postgres",password="greenplum",database="hive")
 cur = conn.cursor()
 sql = "SELECT loginid, username, displayname, dpdn  FROM gfoa_user_org limit 5"
