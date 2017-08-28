@@ -3,20 +3,17 @@
 #
 
 
-print [x*x for x in xrange(1,10) if x%2==0]
+print ([x*x for x in range(1,10) if x%2==0])
 
 
-def count():
+def count(m):
     fs = []
-    for i in range(1, 4):
+    for i in range(1, m):
         def f():
              return i*i
         fs.append(f)
     return fs
 
-f1, f2, f3 = count()
-
-counter=4
-print counter
+print (count(6))
 
 
