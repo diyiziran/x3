@@ -18,3 +18,4 @@ df.s
 
 #设置通联数据的凭证
 ts.set_token('a6077ed0e7f1f4e3758f4beb973bb7180a5971026c6558a7ea57433a1533a064')
+ts.get_notices(code='000776.sh')
