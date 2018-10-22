@@ -17,3 +17,4 @@ def count(m):
 print (count(6))
 
 
+http://f.apiplus.net/ssq.json
