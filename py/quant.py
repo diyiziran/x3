@@ -34,6 +34,7 @@ for j in l3:
         print(str(j)+' x '+str(i)+' = ')
 
 #除法口诀
+#按顺序
 arr=np.zeros((9,9,3),dtype=np.int32)
 for i in range(1,10):
     for j in range(1,10):
@@ -45,7 +46,18 @@ for i in range(1,10):
             if f1*f2*p>0:
                 print(str(p)+' ÷ '+str(f1)+' = '+str(f2))
             
-            
+#随机   
+arr=np.zeros((9,9,3),dtype=np.int32)
+for i in l2:
+    for j in l3:
+        if i<=j:
+            arr[i-1][j-1]=[i,j,i*j]
+            f1=arr[i-1][j-1][0]
+            f2=arr[i-1][j-1][1]
+            p=arr[i-1][j-1][2]
+            if f1*f2*p>0:
+                print(str(p)+' ÷ '+str(f1)+' = '+str(f2))
+         
 for i in range(1,10):
     print(i)            
 for i in range(2,10):
