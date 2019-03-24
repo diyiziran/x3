@@ -22,16 +22,38 @@ ts.get_notices(code='000776.sh')
 
 
 #打印乘法口诀
+#random.seed(0)
 l1=list()
-for i in range(1,10):
+for i in range(2,10):
     l1.append(i)
-l2=random.sample(l1,9)
-l3=random.sample(l1,9)
+l2=random.sample(l1,8)
+l3=random.sample(l1,8)
      
 for j in l3:
     for i in l2:
         print(str(j)+' x '+str(i)+' = ')
-    
+
+#除法口诀
+arr=np.zeros((9,9,3),dtype=np.int32)
+for i in range(1,10):
+    for j in range(1,10):
+        if i<=j:
+            arr[i-1][j-1]=[i,j,i*j]
+            f1=arr[i-1][j-1][0]
+            f2=arr[i-1][j-1][1]
+            p=arr[i-1][j-1][2]
+            if f1*f2*p>0:
+                print(str(p)+' ÷ '+str(f1)+' = '+str(f2))
+            
+            
+for i in range(1,10):
+    print(i)            
+for i in range(2,10):
+    l1.append(i)
+l2=random.sample(l1,8)
+l3=random.sample(l1,8)
+
+
 for j in range(7,10):
     for i in l2:
         print(str(j)+' x '+str(i)+' = ')    
