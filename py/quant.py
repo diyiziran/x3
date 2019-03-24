@@ -7,7 +7,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import tushare as ts
-
+import random
 #2015年第三季度基金持股情况
 df=ts.fund_holdings(2017,2)
 #df.to_csv('d:/x3/py/jjcg.csv')
