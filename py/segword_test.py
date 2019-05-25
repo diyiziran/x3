@@ -5,42 +5,60 @@ Created on Wed Jul 25 16:12:16 2018
 
 @author: zhengjt
 """
-
+#本程序按顺序完成四件工作：
+#1，读入文件
+#2，分词
+#3，分词结果写到excel文件
+#4，制作词云
 
 from os import path
 import jieba
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
+from openpyxl import load_workbook
+from openpyxl import Workbook
 
-comment = []
-with open('shenqu.txt',mode='r',encoding='utf-8') as f:
-    rows = f.readlines()
-    for row in rows:
-        if len(row.split(',')) == 5:
-            comment.append(row.split(',')[4].replace('\n',''))
-jieba.add_word('彭于晏')   #自定义词
+#1，读入文件
+with open('yswy.txt',mode='r') as f:
+    mytext=f.read()
+f.close()
 
-#分词
-comment_after_split = jieba.cut(str(comment),cut_all=False)
+#2，分词
+##计算并输出词频
+sgtxt=jieba.cut(mytext)
+count={}    #创建字典
+for word in sgtxt:
+    if len(word)==1:  #忽略单字
+        continue
+    else:
+        count[word]=count.get(word,0)+1
+items=list(count.items())   #转换成列表
+items.sort(key=lambda x:x[-1],reverse=True)
 
-wl_space_split= " ".join(comment_after_split)
+
+#3，分词结果写到excel文件
+filename="sg_result.xlsx"
+wb = load_workbook(filename)
+sheet = wb.active
+#sheet = wb.get_sheet_by_name("sheet1")
+sheet.title='分词结果'
+#写到excel文件
+for i in range(len(items)):
+    sheet["A%d" % (i+1)],sheet["B%d" % (i+1)]=items[i]
+
+wb.save(filename)    
+
+    
+#4，制作词云
+#
+sgtxt=jieba.cut(mytext)
+wl_space_split= " ".join(sgtxt)
+#wl_space_split=sgtxt
 #导入背景图
 #backgroud_Image = plt.imread('1.jpg') 
 stopwords = STOPWORDS.copy()
 #可以加多个屏蔽词
 stopwords.add("电影")
-stopwords.add("一部")
-stopwords.add("一个")
-stopwords.add("没有")
-stopwords.add("什么")
-stopwords.add("有点")
-stopwords.add("这部")
-stopwords.add("这个")
-stopwords.add("不是")
-stopwords.add("真的")
-stopwords.add("感觉")
-stopwords.add("觉得")
-stopwords.add("还是")
 
 
 #设置词云参数 
