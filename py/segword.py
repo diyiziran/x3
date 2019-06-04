@@ -21,7 +21,7 @@ from openpyxl import load_workbook
 from openpyxl import Workbook
 
 #1，读入文件
-with open('yswy.txt',mode='r') as f:
+with open('xykt.txt',mode='r') as f:
     mytext=f.read()
 f.close()
 
@@ -60,7 +60,21 @@ wl_space_split= " ".join(sgtxt)
 backgroud_Image = plt.imread('gf.jpg') 
 stopwords = STOPWORDS.copy()
 #可以加多个屏蔽词
-stopwords.add("电影")
+stopwords.add("通过")
+stopwords.add("实现")
+stopwords.add("提供")
+stopwords.add("进行")
+stopwords.add("目前")
+stopwords.add("情况")
+stopwords.add("开展")
+stopwords.add("对于")
+stopwords.add("利用")
+stopwords.add("课题")
+stopwords.add("工作")
+stopwords.add("数据")
+stopwords.add("分析")
+
+
 
 
 #设置词云参数 

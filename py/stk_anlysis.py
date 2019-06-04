@@ -8,11 +8,30 @@
 import pandas as pd#
 #import pandas.io.dat as web
 from pandas_datareader import wb,data
+import matplotlib.pyplot as plt
 import datetime
+import tushare as ts
 
 start = datetime.datetime(2016,1,1)
 end = datetime.date.today()
 
 goog = data.DataReader("GOOG","yahoo")
-print type(goog)
-print goog.head()
+#国内的数据可以tushare查询
+stk_data=ts.get_hist_data('600848',start='2019-05-05',end='2019-06-03')
+df=goog[goog.index>'2019-04-01']
+plt.plot(df['Open'])
+plt.plot(df['Close'])
+plt.show()
+
+
+
+#tushare pro的使用
+#ts.set_token('b7bbd6907437d1f894145e7487709d27ee220b6c3772205ef05c83fb')
+#pro=ts.pro_api()
+
+ts.set_token('b7bbd6907437d1f894145e7487709d27ee220b6c3772205ef05c83fb')
+pro=ts.pro_api()
+df=pro.daily(ts_code='000001.SZ', start_date='20190501', end_date='20190603')
+plt.plot(df['open'])
+plt.plot(df['close'])
+plt.show()
