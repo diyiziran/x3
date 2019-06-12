@@ -53,6 +53,8 @@ wb.save(filename)
     
 #4，制作词云
 #
+#增加自定义词语
+jieba.add_word('金管家')
 sgtxt=jieba.cut(mytext)
 wl_space_split= " ".join(sgtxt)
 #wl_space_split=sgtxt
@@ -60,19 +62,12 @@ wl_space_split= " ".join(sgtxt)
 backgroud_Image = plt.imread('gf.jpg') 
 stopwords = STOPWORDS.copy()
 #可以加多个屏蔽词
-stopwords.add("通过")
-stopwords.add("实现")
-stopwords.add("提供")
-stopwords.add("进行")
-stopwords.add("目前")
-stopwords.add("情况")
-stopwords.add("开展")
-stopwords.add("对于")
-stopwords.add("利用")
-stopwords.add("课题")
-stopwords.add("工作")
+stopwords.add("来自")
+stopwords.add("需要")
 stopwords.add("数据")
-stopwords.add("分析")
+stopwords.add("比较")
+
+
 
 
 
@@ -93,4 +88,4 @@ plt.imshow(wc)
 #plt.axis('off')#不显示坐标轴  
 plt.show()
 #保存结果到本地
-wc.to_file('xie_zheng.jpg')
+wc.to_file('xie_zheng1.jpg')

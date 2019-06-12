@@ -35,3 +35,4 @@ df=pro.daily(ts_code='000001.SZ', start_date='20190501', end_date='20190603')
 plt.plot(df['open'])
 plt.plot(df['close'])
 plt.show()
+plt.plo
