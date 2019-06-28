@@ -111,7 +111,37 @@ for r_list in r_lists:
     for v in r_list:
         print(v + ',',end='')
     print('\n')
+
+l=r_lists
+for al in l:
+    al.append('M1909')
     
+df=pd.DataFrame(l,columns=['date','open','high','low','close','vol','future_code'])
+#调整columns顺序，注意语法是双中括号
+df=df[['date','future_code','open','high','low','close','vol']]
+#计算移动平均数
+df['MA20']=df['close'].rolling(window=20).mean()
+
+
+#3，分词结果写到excel文件
+filename="tmp.xlsx"
+wb = load_workbook(filename)
+#sheet = wb.active
+sheet = wb["工作表1"]
+#sheet = wb.get_sheet_by_name("工作表1")
+#sheet.title='分词结果'
+#写到excel文件
+
+for i in range(1,len(df)):
+    sheet["A%d" % (i+1)]=df.iloc[i]['close']
+    sheet["B%d" % (i+1)]=df.iloc[i]['MA20']
+    sheet["c%d" % (i+1)]=df.iloc[i]['date']
+    i=i+1
+
+wb.save(filename)   
+
+
+
 # 2.新浪期货数据各品种代码（商品连续）如下
 #
 #
