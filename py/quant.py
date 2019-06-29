@@ -15,11 +15,13 @@ import tushare as ts
 import operator
 from openpyxl import load_workbook
 from openpyxl import Workbook
-
+import time
 
 import requests
 import numpy as np
 import psycopg2
+import tkinter as tk
+from tkinter import *
 
 #读实盘数据
 #功能：  实时读取新浪财经期货数据
@@ -27,6 +29,55 @@ import psycopg2
 #返回值：以数组的形式返回
 
 #维护一个关注的期货list，包含代码和中文名
+#主程序
+
+调用一次写入历史数据
+启动实时数据写库，一直跑
+while 2>1 :
+    write_future_real_data_to_db(future_dict)
+#    1分钟读一次数据
+    time.sleep(60)
+从数据库读数据，判断当前close价格与昨日均线的比较，如有突破弹出对话框
+conn = psycopg2.connect(database="postgres",user="postgres",password="123456",host="localhost",port="5432")
+cur = conn.cursor()
+sql="select t.future_code,t.close,his.close,his.ma20,his.future_name from (" \
++"select future_code,close,rank()over(partition by future_code order by read_data_time asc) "\
++"as rank_time from future_real_data where date='2019-06-28')t "\
++"left join (select future_code,future_name,close,ma20 from future_his_data "\
++"where date='2019-06-27')his on t.future_code=his.future_code where t.rank_time=1"
+cur.execute(sql)
+rows = cur.fetchall()
+for row in rows:
+    if row[3]<row[2] and row[1]>row[2] :
+        tips="向上突破MA20："+row[0]+" "+row[4]
+        print(tips)
+        a=tk.Tk()
+        a.wm_title(row[4])
+        b=tk.Label(a,text=tips)
+        b.pack(side=LEFT)
+        a.mainloop()
+    elif row[3]>row[2] and row[1]<row[2] :
+        tips="向下突破MA20："+row[0]+" "+row[4]
+        print(tips)
+        a=tk.Tk()
+        a.wm_title(row[4])
+        b=tk.Label(a,text=tips)
+        b.pack(side=LEFT)
+        a.mainloop()
+    
+   print("future_code = ", row[0])
+   print("实时close = ", row[1])
+   print("昨天ma20 = ", row[2])
+   print("昨天close = ",  row[3])
+   print("future_name = ",  row[4],"\n")
+   
+a=tk.Tk()
+tk.Label(a,text='test提示')
+time.sleep(20)
+a.mainloop()
+
+
+
 future_dict={'L0':'塑料','C0':'玉米','RB0':'螺纹钢','AG0':'白银','AU0':'黄金','CU0':'沪铜'
              ,'AL0':'沪铝','ZN0':'沪锌','PB0':'沪铅','RU0':'橡胶','FU0':'燃油','WR0':'线材'
              ,'A0':'大豆','M0':'豆粕','Y0':'豆油','J0':'焦炭','P0':'棕油','V0':'PVC'
@@ -73,12 +124,7 @@ def write_future_real_data_to_db(future_dict):
     # 关闭练级
     cur.close()
     conn.close()
-future_dict2={'L0':'塑料','AG0':'白银','AU0':'黄金','CU0':'沪铜'
-             ,'AL0':'沪铝','ZN0':'沪锌','PB0':'沪铅','RU0':'橡胶','FU0':'燃油','WR0':'线材'
-             ,'A0':'大豆','Y0':'豆油','J0':'焦炭','P0':'棕油','V0':'PVC'
-             ,'V0':'菜籽','RM0':'菜粕','FG0':'玻璃','CF0':'棉花'
-             ,'TA0':'甲酸'}    
-write_future_real_data_to_db(future_dict2)
+
 
 
 def read_real_future_data(future_code):
@@ -131,19 +177,24 @@ def read_real_future_data(future_code):
     return f
 
 def read_real_future_data2(future_code_list):
-##    future_code ='M1809'
+    
     #从新浪财经读数据
     import pandas as pd
     df_merge=pd.DataFrame()
     for future_code in future_code_list :
-#        future_code='M1909'
         print(future_code)
         url_str = ('http://hq.sinajs.cn/list=' +future_code)
         r = requests.get(url_str)
         #数据处理，保存在临时数组中
         b=list(r)
-        str1=b[0].decode(encoding='gbk') +b[1].decode(encoding='gbk')
-        str2=str1.split(',')
+        if len(b)<2:
+            print(future_code+'无数据')
+            continue
+#        C0玉米等个别品种解码报错，只能不解码了
+#        str1=b[0].decode(encoding='gbk') +b[1].decode(encoding='gbk')
+#        str2=str1.split(',')
+        str1=b[0] +b[1]
+        str2=str(str1).split(',')
         str3=str2[0].split('_')[-1]
         str4=str3.split('=')
         
@@ -153,7 +204,24 @@ def read_real_future_data2(future_code_list):
 
     
     return df_merge
+#######################
+future_code='WS0'
+print(future_code)
+url_str = ('http://hq.sinajs.cn/list=' +future_code)
+r = requests.get(url_str)
+#数据处理，保存在临时数组中
+b=list(r)
+str1=b[0].decode(encoding='gbk') +b[1].decode(encoding='gbk')
+str1=b[0] +b[1]
+str2=str(str1).split(',')
+str3=str2[0].split('_')[-1]
+str4=str3.split('=')
 
+l=[[str2[17],str4[0],str2[16],str2[1],str2[2],str2[3],str2[4],str2[6],str2[14]]]
+df=pd.DataFrame(l,columns=['date','future_code','future_name','read_data_time','open','high','low','close','vol'])
+df_merge=df_merge.append(df,ignore_index =True)
+        
+        ###############################
 df=read_real_future_data2(list(future_dict))
 df1=read_real_future_data2(['RB1909'])
 df=read_real_future_data2(['L0',
